@@ -1,7 +1,6 @@
 import streamlit as st
 import random
-import time
-
+from datetime import datetime, timedelta
 # Chores and Candidates
 chores = ["GARBAGE + VACUUM", "MOPING THE FLOORS", "CLEANING THE TOILET + WIPING FURNITURE"]
 candidates = ["ALI", "SEN", "ANIKET"]
@@ -11,10 +10,20 @@ candidates = ["ALI", "SEN", "ANIKET"]
 @st.cache_data(persist="disk")
 def assign_chores():
     random.shuffle(candidates)
-    return {chores[i]: candidates[i] for i in range(len(chores))}
+    return datetime.now(), {chores[i]: candidates[i] for i in range(len(chores))}
 
 
-assigned_chores = assign_chores()
+def is_week_passed(last_assigned_time):
+    current_time = datetime.now()
+    time_difference = current_time - last_assigned_time
+    return time_difference >= timedelta(days=7)
+
+
+last_assigned_timestamp, assigned_chores = assign_chores()
+
+if is_week_passed(last_assigned_timestamp):
+    assign_chores.clear()
+    last_assigned_timestamp, assigned_chores = assign_chores()
 
 # UI
 st.title("Weekly Chores Assignment")
