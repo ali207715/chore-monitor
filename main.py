@@ -1,27 +1,28 @@
 import streamlit as st
 import random
+import time
 
 # Chores and Candidates
 chores = ["GARBAGE + VACUUM", "MOPING THE FLOORS", "CLEANING THE TOILET + WIPING FURNITURE"]
 candidates = ["ALI", "SEN", "ANIKET"]
 
+
 # Function to randomly assign chores to candidates
+@st.cache_data(persist="disk")
 def assign_chores():
     random.shuffle(candidates)
     return {chores[i]: candidates[i] for i in range(len(chores))}
 
+
+assigned_chores = assign_chores()
+
 # UI
 st.title("Weekly Chores Assignment")
 
-# Button to assign candidates
-if st.button("Assign Candidates"):
-    st.session_state["assigned_chores"] = assign_chores()
-    st.success("Chores assigned successfully!")
-
 # Display assigned chores
-if 'assigned_chores' in st.session_state:
+if assigned_chores:
     st.subheader("This week's assigned chores:")
-    for chore, candidate in st.session_state["assigned_chores"].items():
+    for chore, candidate in assigned_chores.items():
         st.info(f"{chore}: {candidate}")
 
 # Checklist for marking off completed chores
