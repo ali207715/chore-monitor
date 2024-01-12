@@ -1,28 +1,39 @@
 import streamlit as st
 import random
 
+# Chores and Candidates
+chores = ["GARBAGE + VACUUM", "MOPING THE FLOORS", "CLEANING THE TOILET + WIPING FURNITURE"]
+candidates = ["ALI", "SEN", "ANIKET"]
 
-def assign_chores(chores, candidates):
+# Function to randomly assign chores to candidates
+def assign_chores():
     random.shuffle(candidates)
-    assignments = dict(zip(chores, candidates))
-    return assignments
+    return {chores[i]: candidates[i] for i in range(len(chores))}
 
+# UI
+st.title("Weekly Chores Assignment")
 
-def main():
-    st.title("Chores Assignment App")
+# Button to assign candidates
+if st.button("Assign Candidates"):
+    st.session_state["assigned_chores"] = assign_chores()
+    st.success("Chores assigned successfully!")
 
-    chores = ["GARBAGE + VACUUM", "MOPING THE FLOORS", "CLEANING THE TOILET + WIPING FURNITURE"]
-    candidates = ["ALI", "SEN", "ANIKET"]
+# Display assigned chores
+if 'assigned_chores' in st.session_state:
+    st.subheader("This week's assigned chores:")
+    for chore, candidate in st.session_state["assigned_chores"].items():
+        st.info(f"{chore}: {candidate}")
 
-    if st.button("Assign Chores"):
-        assignments = assign_chores(chores, candidates)
-        st.success("Chores assigned successfully!")
+# Checklist for marking off completed chores
+st.subheader("Mark off completed chores:")
+completed_chores = st.checkbox("GARBAGE + VACUUM")
+if completed_chores:
+    st.success("Chore completed!")
 
-        st.subheader("Chores for the Week:")
-        for chore, person in assignments.items():
-            st.write(f"- {chore}: {person}")
+completed_chores = st.checkbox("MOPING THE FLOORS")
+if completed_chores:
+    st.success("Chore completed!")
 
-if __name__ == "__main__":
-    main()
-
-
+completed_chores = st.checkbox("CLEANING THE TOILET + WIPING FURNITURE")
+if completed_chores:
+    st.success("Chore completed!")
